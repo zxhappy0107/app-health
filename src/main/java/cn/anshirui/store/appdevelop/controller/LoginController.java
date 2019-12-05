@@ -1,6 +1,7 @@
 package cn.anshirui.store.appdevelop.controller;
 
 import cn.anshirui.store.appdevelop.mapper.AdminMapper;
+import cn.anshirui.store.appdevelop.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,11 +22,12 @@ import java.util.Map;
 public class LoginController {
 
     @Autowired
-    private AdminMapper adminMapper;
+    private LoginService loginService;
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public Map<String, Object> toLogin(){
         Map<String, Object> resultMap = new HashMap<>();
+
         return  resultMap;
     }
 

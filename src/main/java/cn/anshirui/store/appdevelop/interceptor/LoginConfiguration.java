@@ -1,6 +1,7 @@
 package cn.anshirui.store.appdevelop.interceptor;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -12,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  *@Date 10:48
  *Version 1.0
  **/
-@Component
+@Configuration
 public class LoginConfiguration implements WebMvcConfigurer {
 
     /**
@@ -36,7 +37,7 @@ public class LoginConfiguration implements WebMvcConfigurer {
      **/
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginInterceptor()).addPathPatterns("/**").excludePathPatterns("/login", "/register", "/static");
+        registry.addInterceptor(loginInterceptor()).addPathPatterns("/**").excludePathPatterns("/login", "/register", "/exe");
     }
 
 }

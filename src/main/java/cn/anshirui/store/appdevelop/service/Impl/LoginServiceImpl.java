@@ -1,15 +1,23 @@
 package cn.anshirui.store.appdevelop.service.Impl;
 
+import cn.anshirui.store.appdevelop.common.KeyWord;
+import cn.anshirui.store.appdevelop.common.PassUtils;
+import cn.anshirui.store.appdevelop.entity.AdminUserMain;
 import cn.anshirui.store.appdevelop.entity.AdminUsers;
 import cn.anshirui.store.appdevelop.mapper.AdminMapper;
+import cn.anshirui.store.appdevelop.note.SMSClientUtils;
 import cn.anshirui.store.appdevelop.service.LoginService;
+import cn.anshirui.store.appdevelop.service.RedisService;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,40 +31,35 @@ import java.util.Map;
 public class LoginServiceImpl implements LoginService {
 
     @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
     private AdminMapper adminMapper;
 
-    private Map<String, Object> operateToKen(Map<String, Object> map, AdminUsers user, Integer userId) {
+    @Autowired
+    private RedisService redis;
+
+    public Map<String, Object> login(String username, String pass) {
+        Map<String, Object> resultMap = new HashMap<>();
         //根据数据库的用户信息查询Token
-        AdminUsers token = adminMapper.selectUserById(userId);
+        AdminUsers user = adminMapper.selectUserByUserAccount(username);
+        if (null == user){
+            resultMap.put("code", 50003);
+        }
         //为生成Token准备
         String TokenStr = "";
         Date date = new Date();
-//        int nowTime = (int) (date.getTime() / 1000);
         //生成Token
-        TokenStr = creatToken(userId, date);
-        if (null == token) {
-            //第一次登陆
-            token = new AdminUsers();
-            token.setToken(TokenStr);
-            token.setUser_logintime(date);
-            token.setUser_id(userId);
-            adminMapper.updateUser(token);
-        }else{
-            //登陆就更新Token信息
-            TokenStr = creatToken(userId, date);
-            token.setToken(TokenStr);
-            token.setUser_logintime(date);
-            adminMapper.updateUser(token);
-        }
-//        UserQueryForm queryForm = getUserInfo(user, TokenStr);
+        TokenStr = creatToken(user.getUser_id(), date);
+        redis.set("user" + user.getUser_id(),TokenStr,86400L);//一天时间过期
         /* 将用户信息存入session */
         /*SessionContext sessionContext = SessionContext.getInstance();
         HttpSession session = sessionContext.getSession();
         httpSession.setAttribute("userInfo", user);*/
-        //返回Token信息给客户端
-//        successful(map);
-//        map.put("data", queryForm);
-        return map;
+        resultMap.put("code", 200);
+        resultMap.put("userId", user.getUser_id());
+        resultMap.put("token", TokenStr);
+        return resultMap;
     }
 
     /**
@@ -73,9 +76,60 @@ public class LoginServiceImpl implements LoginService {
                 .setExpiration(new Date(date.getTime() + 1000 * 60 * 60)) /*过期时间*/
                 .claim("userId",String.valueOf(userId) ) // 设置内容
                 .setIssuer("zx")// 设置签发人
-                .signWith(signatureAlgorithm, "签名"); // 签名，需要算法和key
+                .signWith(signatureAlgorithm, KeyWord.LOGIN_KEY); // 签名，需要算法和key
         String jwt = builder.compact();
         return jwt;
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public synchronized int register(String phone, String pass) throws Exception {
+        if (null != adminMapper.selectUserIdByPhone(phone)){
+            return 50001;
+        }
+        AdminUserMain main = new AdminUserMain();
+        main.setUser_name("用户_" + phone.substring(phone.length() - 4, phone.length()));
+        adminMapper.insertUserMain(main);
+        AdminUsers users = new AdminUsers();
+        users.setUser_account(phone);
+        users.setUser_password(PassUtils.getMD5Str(pass));
+        users.setUser_starttime(new Date());
+        users.setUmid(main.getUmid());
+        users.setUser_name("用户_" + phone.substring(phone.length() - 4, phone.length()));
+        adminMapper.insertUser(users);
+        return 200;
+    }
+
+    @Override
+    public boolean judgeUserExist(String phone) {
+        if (null != adminMapper.selectUserIdByPhone(phone)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @Author zhangxuan
+     * @Description //TODO 发送验证码
+     * @Date 10:34 2019/12/4
+     * @Param [phone, exe 0判断用户不存在1存在]
+     * @return int
+     **/
+    @Override
+    public int sendCode(String phone, boolean exe) {
+        boolean user = adminMapper.selectUserIdByPhone(phone) != null ? true : false;
+        if (exe){
+            if (user){
+                return 50001;
+            }
+            rabbitTemplate.convertAndSend("NoteExchange", "NoteRouting", phone);
+            return 200;
+        }else{
+            if (!user){
+                return 50003;
+            }
+            rabbitTemplate.convertAndSend("NoteExchange", "NoteRouting", phone);
+            return 200;
+        }
+    }
 }

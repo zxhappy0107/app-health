@@ -31,6 +31,4 @@ public class AdminUsers implements Serializable {
 
     private Integer umid;
 
-    private String token;
-
 }

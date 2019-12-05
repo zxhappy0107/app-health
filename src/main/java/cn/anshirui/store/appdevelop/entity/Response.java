@@ -31,6 +31,10 @@ public class Response {
         return new ResponseResult<T>().setCode(ResultCode.INTERNAL_SERVER_ERROR).setMsg(message);
     }
 
+    public static <T> ResponseResult<T> makeRsp(int code) {
+        return new ResponseResult<T>().setCode(code).setMsg(ResultCode.msg(code));
+    }
+
     public static <T> ResponseResult<T> makeRsp(int code, String msg) {
         return new ResponseResult<T>().setCode(code).setMsg(msg);
     }

@@ -3,5 +3,5 @@ spring:
     active: dev
 mybatis:
   type-aliases-package: cn.anshirui.store.appdevelop.entity
-  config-location: classpath:mybatis/mybatis-config.xml
+
 
