@@ -31,4 +31,22 @@ public class AdminUsers implements Serializable {
 
     private Integer umid;
 
+    /**
+     * @Author zhangxuan
+     * @Description //TODO 用户的基础信息
+     * @Date 10:27 2019/12/9
+     * @Param
+     * @return
+     **/
+    private AdminUserMain adminUserMain;
+
+    /**
+     * @Author zhangxuan
+     * @Description //TODO 用户的头像
+     * @Date 10:27 2019/12/9
+     * @Param
+     * @return
+     **/
+    private UserIcon userIcon;
+
 }

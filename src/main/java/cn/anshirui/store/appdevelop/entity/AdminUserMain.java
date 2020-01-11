@@ -3,6 +3,7 @@ package cn.anshirui.store.appdevelop.entity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 /**
  * @ClassName 用户的基础信息
@@ -22,22 +23,26 @@ public class AdminUserMain implements Serializable {
 
     private String user_birthday;
 
-    private Integer user_id_type;
+    private String user_id_type;
 
     private String user_id;
 
-    private Integer user_height;
+    private String user_height;
 
-    private Double user_weight;
+    private String user_weight;
 
-    private Integer user_weight_type;
+    private String user_weight_type;
 
-    private Integer user_marr;
+    private String user_marr;
 
-    private Integer user_cul;
+    private String user_cul;
 
     private String user_occ;
 
-    private Integer user_ins;
+    private String user_ins;
+
+    private String user_urname;
+
+    private String user_urphone;
 
 }

@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: 8086
   tomcat:
     uri-encoding: UTF-8
   servlet:
@@ -8,9 +8,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/anshirui?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong
+    url: jdbc:mysql://localhost:58000/anshirui?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=false
     username: root
-    password: 123456
+    password: Zhangjun@2018
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       ## 最小空闲连接数量
@@ -51,11 +51,10 @@ spring:
       shutdown-timeout: 5000
 
   rabbitmq:
-    host: 192.168.0.142
+    host: 127.0.0.1
     port: 5672
-    username: admin
-    password: admin
-    virtual-host: admin
+    username: guest
+    password: guest
 #    listener:
 #      ##并发消费者的初始化值
 #      concurrency: 10

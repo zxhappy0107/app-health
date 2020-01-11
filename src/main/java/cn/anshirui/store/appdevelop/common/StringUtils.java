@@ -1,12 +1,7 @@
 package cn.anshirui.store.appdevelop.common;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.text.ParseException;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -659,5 +654,41 @@ public class StringUtils {
 		}
 		return "000****0000";
 	}
-	
+
+	// 千卡路里计算公式
+	public static String getCalorieByStep(long steps) {
+		return String.format("%.1f", steps * 0.6f * 60 * 1.036f / 1000);
+	}
+
+	/**
+	 * @Author zhangxuan
+	 * @Description //TODO
+	 * @Date 16:30 2019/12/16
+	 * @Param [birthDay]
+	 * @return int
+	 **/
+	public static int getAgeByBirth(Date birthDay) throws ParseException {
+		int age = 0;
+		Calendar cal = Calendar.getInstance();
+		if (cal.before(birthDay)) { //出生日期晚于当前时间，无法计算
+			return 0;
+		}
+		int yearNow = cal.get(Calendar.YEAR);  //当前年份
+		int monthNow = cal.get(Calendar.MONTH);  //当前月份
+		int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH); //当前日期
+		cal.setTime(birthDay);
+		int yearBirth = cal.get(Calendar.YEAR);
+		int monthBirth = cal.get(Calendar.MONTH);
+		int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
+		age = yearNow - yearBirth;   //计算整岁数
+		if (monthNow <= monthBirth) {
+			if (monthNow == monthBirth) {
+				if (dayOfMonthNow < dayOfMonthBirth) age--;//当前日期在生日之前，年龄减一
+			} else {
+				age--;//当前月份在生日之前，年龄减一
+			}
+		}
+		return age;
+	}
+
 }

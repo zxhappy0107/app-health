@@ -8,9 +8,9 @@ import java.lang.annotation.*;
  * @Description
  * @data 2019/11/27 16:36
  */
-@Retention(RetentionPolicy.CLASS)
-@Target({ElementType.METHOD})
-@Documented
+@Retention(RetentionPolicy.RUNTIME)//运行时使用该注解
+@Target({ElementType.METHOD})//定义为作用于方法上
+@Documented//注解是否将包含在 JavaDoc 中
 public @interface WebLog {
     
     /**

@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>app-develop</name>
     <description>App project for Spring Boot</description>
+    <packaging>jar</packaging>
 
     <properties>
         <java.version>1.8</java.version>
@@ -24,6 +25,11 @@
         <httpcore.version>4.4.6</httpcore.version>
         <httpclient.version>4.5.2</httpclient.version>
         <httpmime.version>4.5.2</httpmime.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <jsms-client.version>1.2.8</jsms-client.version>
+        <jiguang-common.version>1.0.8</jiguang-common.version>
+        <pagehelper.version>1.2.5</pagehelper.version>
+        <fastjson.version>1.2.58</fastjson.version>
     </properties>
 
     <dependencies>
@@ -45,11 +51,17 @@
         </dependency>
 
         <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>${pagehelper.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
         </dependency>
-
+        
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -86,23 +98,24 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
         </dependency>
 
         <!-- 极光短息 -->
         <dependency>
             <groupId>cn.jpush.api</groupId>
             <artifactId>jsms-client</artifactId>
-            <version>1.2.8</version>
+            <version>${jsms-client.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.jpush.api</groupId>
             <artifactId>jiguang-common</artifactId>
-            <version>1.0.8</version>
+            <version>${jiguang-common.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.7</version>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <!--redis-->

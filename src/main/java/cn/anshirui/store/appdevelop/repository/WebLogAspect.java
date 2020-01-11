@@ -15,29 +15,24 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 
 /**
- *@ClassName 日志切面配置
- *@Description TODO
- *@Author zhangxuan
- *@Date 16:46
- *Version 1.0
+ * @Author zhangxuan
+ * @Description //TODO 自定义日志打印
+ * @Date 15:28 2019/12/6
+ * @Param
+ * @return
  **/
 @Aspect
 @Component
+@Profile({"dev", "test"})
 public class WebLogAspect {
 
-    private Logger logger = LoggerFactory.getLogger(WebLogAspect.class);
+    private final static Logger logger         = LoggerFactory.getLogger(WebLogAspect.class);
+    /** 换行符 */
+    private static final String LINE_SEPARATOR = System.lineSeparator();
 
-    private static final String LIME_SEPARATOR = System.lineSeparator();//换行符
-
-    /**
-     * @Author zhangxuan
-     * @Description //TODO 自定义@WebLog 注解为切点
-     * @Date 16:48 2019/11/27
-     * @Param []
-     * @return void
-     **/
+    /** 以自定义 @WebLog 注解为切点 */
     @Pointcut("@annotation(cn.anshirui.store.appdevelop.repository.WebLog)")
-    public void webLog(){}
+    public void webLog() {}
 
     /**
      * 在切点之前织入
@@ -76,24 +71,26 @@ public class WebLogAspect {
     @After("webLog()")
     public void doAfter() throws Throwable {
         // 接口结束后换行，方便分割查看
-        logger.info("=========================================== End ===========================================" + LIME_SEPARATOR);
+        logger.info("=========================================== End ===========================================" + LINE_SEPARATOR);
     }
 
     /**
-     * @Author zhangxuan
-     * @Description //TODO 环绕
-     * @Date 16:49 2019/11/27
-     * @Param []
-     * @return java.lang.Object
-     **/
+     * 环绕
+     * @param proceedingJoinPoint
+     * @return
+     * @throws Throwable
+     */
     @Around("webLog()")
-    public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable{
+    public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object result = proceedingJoinPoint.proceed();
-        logger.info("Response Args   :   {}", new Gson().toJson(result));//打印出参
-        logger.info("Time-Consuming   :   {} ms", System.currentTimeMillis() - startTime);//执行耗时
+        // 打印出参
+        logger.info("Response Args  : {}", new Gson().toJson(result));
+        // 执行耗时
+        logger.info("Time-Consuming : {} ms", System.currentTimeMillis() - startTime);
         return result;
     }
+
 
     /**
      * 获取切面注解的描述
@@ -106,6 +103,7 @@ public class WebLogAspect {
             throws Exception {
         String targetName = joinPoint.getTarget().getClass().getName();
         String methodName = joinPoint.getSignature().getName();
+        System.out.println(targetName + " " + methodName);
         Object[] arguments = joinPoint.getArgs();
         Class targetClass = Class.forName(targetName);
         Method[] methods = targetClass.getMethods();

@@ -11,6 +11,10 @@ import java.security.MessageDigest;
  **/
 public class PassUtils {
 
+    public static void main(String[] args) throws Exception {
+        System.out.println(getMD5Str("lidejun112233"));
+    }
+
     private static String SALT_PASS = "3.14159";
 
     /**

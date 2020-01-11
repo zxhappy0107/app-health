@@ -33,7 +33,7 @@ public class AdminMapperSql {
             }else{
                 if (null == adminUsers.getUser_password() && null != adminUsers.getUser_account()){
                     builder.append(" user_account = #{user_account}");
-                }else{
+                }else if (null != adminUsers.getUser_password() && null == adminUsers.getUser_account()){
                     builder.append(" user_password = #{user_password}");
                 }
             }

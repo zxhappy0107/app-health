@@ -4,4 +4,10 @@ spring:
 mybatis:
   type-aliases-package: cn.anshirui.store.appdevelop.entity
 
+# pagehelper
+pagehelper:
+    helperDialect: mysql
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
 
